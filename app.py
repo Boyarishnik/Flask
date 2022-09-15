@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def main():
-    return "<a href=\"/index/\">index</a>"
+    return "<a href=\"/index/\">index1</a>"
 
 
 @app.route('/index/')
