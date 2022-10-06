@@ -7,7 +7,8 @@ app = Flask(__name__)
 menu = [{"name": "Главная", "url": '/'},
         {"name": "Приветствие", "url": '/Дмитрий/'},
         {"name": "id", "url": '/123/'},
-        {"name": "index", "url": '/index/'}]
+        {"name": "index", "url": '/index/'},
+        {"name": "Здарова", "url": "/Здарова"}]
 
 @app.route('/')
 def main():
@@ -26,7 +27,7 @@ def indexx():
     i = 0
     while True:
         i += 1
-        yield str(i)
+        yield f"""<font size={i}>{i}</font>"""
         sleep(1)
 
 if __name__ == "__main__":
