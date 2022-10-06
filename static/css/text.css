@@ -1,0 +1,10 @@
+.text {
+  color: red;
+  font-size: 100px;
+}
+
+.title {
+  position: fixed;
+  background: grey;
+  right: 40px;
+}

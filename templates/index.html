@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Моя первая страница</title>
-</head>
-<body>
-  {id}
+{% extends 'base.html' %}
+{% block content %}
+  {% if id == 0 %}
+    <h1>id == 0</h1>
+  {% else %}
+    <div class="text">id != 0</div>
+  {% endif %}
   <ol>
       <li>
           list_item1
@@ -17,5 +16,5 @@
           list_item3
       </li>
   </ol>
-</body>
-</html>
+    <font size="{{id}}px">id = {{id}}</font>
+{% endblock %}
