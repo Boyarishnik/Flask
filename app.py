@@ -1,14 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from random import randint
 from time import sleep
 
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'asdasd'
 menu = [{"name": "Главная", "url": '/'},
         {"name": "Приветствие", "url": '/Дмитрий/'},
-        {"name": "id", "url": '/123/'},
         {"name": "index", "url": '/index/'},
-        {"name": "Здарова", "url": "/Здарова"}]
+        {"name": "Здарова", "url": "/Здарова/"},
+        {"name": "Регистрация", "url": "/sign_in/"}]
 
 @app.route('/')
 def main():
@@ -29,6 +30,23 @@ def indexx():
         i += 1
         yield f"""<font size={i}>{i}</font>"""
         sleep(1)
+
+@app.route("/sign_in/")
+def signing():
+    return render_template("signing.html", title=menu)
+
+@app.route("/sign_in/", methods=["POST", "GET"])
+def sign_in():
+    if "user_logged" in session:
+        return redirect(url_for("profile", username=session["user_logged"]))
+    elif request.form["username"] == "aaaa" and request.form["password"] == 12345:
+        session["user_logged"] = request.form["username"]
+        return redirect(url_for("profile", username=session["user_logged"]))
+    return render_template("sign_in.html")
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("error_404.html", menu=menu), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
