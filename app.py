@@ -1,5 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, session
-from random import randint
+from flask import Flask, render_template, redirect, url_for, request, session, abort
 from time import sleep
 
 
@@ -9,13 +8,18 @@ menu = [{"name": "Главная", "url": '/'},
         {"name": "Приветствие", "url": '/Дмитрий'},
         {"name": "index", "url": '/index'},
         {"name": "Здарова", "url": "/Здарова"},
-        {"name": "Регистрация", "url": "/signin"}]
+        {"name": "Регистрация", "url": "/signup"},
+        {"name": "Вход", "url": "/signin"}]
+
+users = [{"name": "Dmitriy", "password": "123456789"},
+         {"name": "Admin", "password": "Admin"}]
 
 print(menu[1]["name"])
 @app.route("/profile/<user>")
 def profile(user):
-    print(user)
-    return user
+    if "user_logged" not in session or session["user_logged"] != user:
+        abort(401)
+    return user + f"<br><a href={url_for('exit')}>Выйти</a>"
 
 @app.route('/')
 def main():
@@ -45,18 +49,37 @@ def sign_in():
         print(request.form["username"], request.form["password"])
     if "user_logged" in session:
         return redirect(url_for("profile", user=session["user_logged"]))
-    elif request.method == "POST" and request.form["username"] == "D" and request.form["password"] == "1":
-        session["user_logged"] = request.form["username"]
+    elif request.method == "POST":
+        for user in users:
+            if request.form["username"] == user["name"] and request.form["password"] == user["password"]:
+                session["user_logged"] = request.form["username"]
         return redirect(url_for("profile", user=session["user_logged"]))
     return render_template("signin.html")
 
+
 @app.route("/signup", methods=["POST", "GET"])
 def sign_up():
-    pass
+    if request.method == "POST" and request.form["username"] not in map(lambda a: a["name"], users):
+        users.append({"name": request.form["username"], "password": request.form["password"]})
+        return redirect(url_for("sign_in"))
+    return render_template("signup.html")
+
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("error_404.html", menu=menu), 404
+
+
+@app.errorhandler(401)
+def error(error):
+    return "<h1>Некорректное значение</h1>"
+
+
+@app.route("/exit")
+def exit():
+    del session["user_logged"]
+    return redirect(url_for("sign_in"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
