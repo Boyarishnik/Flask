@@ -1,9 +1,13 @@
 from flask import Flask, render_template, redirect, url_for, request, session, abort
 from time import sleep
+from config import Config
+import os
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = 'asdasdxfgdfhfjyid6kdr6jed6jdsr6kyut8'
+app.config.from_object(Config)
+app.config.update(dict(DATABASE=os.path.join(app.root_path, "flask.db")))
+
 menu = [{"name": "Главная", "url": '/'},
         {"name": "Приветствие", "url": '/Дмитрий'},
         {"name": "index", "url": '/index'},
@@ -59,6 +63,7 @@ def sign_in():
 
 @app.route("/signup", methods=["POST", "GET"])
 def sign_up():
+    print(list(map(lambda a: a["name"], users)))
     if request.method == "POST" and request.form["username"] not in map(lambda a: a["name"], users):
         users.append({"name": request.form["username"], "password": request.form["password"]})
         return redirect(url_for("sign_in"))
@@ -82,5 +87,5 @@ def exit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=Config.DEBUG)
 #hiiiii
