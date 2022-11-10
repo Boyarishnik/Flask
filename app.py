@@ -1,24 +1,38 @@
-from flask import Flask, render_template, redirect, url_for, request, session, abort
+from flask import g, Flask, render_template, redirect, url_for, request, session, abort
 from time import sleep
 from config import Config
 import os
-
+import database as db
 
 app = Flask(__name__)
 app.config.from_object(Config)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "flask.db")))
 
-menu = [{"name": "Главная", "url": '/'},
-        {"name": "Приветствие", "url": '/Дмитрий'},
-        {"name": "index", "url": '/index'},
-        {"name": "Здарова", "url": "/Здарова"},
-        {"name": "Регистрация", "url": "/signup"},
-        {"name": "Вход", "url": "/signin"}]
+menu_list = [("Главная", '/'),
+             ("Приветствие", '/Дмитрий'),
+             ("index", '/index'),
+             ("Здарова", "/Здарова"),
+             ("Регистрация", "/signup"),
+             ("Вход", "/signin"),
+             ("DataBase", "/index_db")]
+
+menu = db.FlaskDatabase(db.connect_db(app), "mainmenu")
+menu.add_list(menu_list)
 
 users = [{"name": "Dmitriy", "password": "123456789"},
          {"name": "Admin", "password": "Admin"}]
 
-print(menu[1]["name"])
+
+def get_db():
+    if not hasattr(g, "link_db"):
+        g.link_db = db.connect_db(app)
+    return g.link_db
+
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, "link_db"):
+        g.link_db.close()
 @app.route("/profile/<user>")
 def profile(user):
     if "user_logged" not in session or session["user_logged"] != user:
