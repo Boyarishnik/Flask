@@ -1,0 +1,42 @@
+body {
+    background-color: #0F100F;
+    color: rgb(150, 255, 10);
+    margin: 0%;
+}
+
+body a {
+    color: rgb(150, 255, 10);
+}
+
+.main_menu {
+    position: fixed;
+    list-style: none;
+    background: black;
+    height: 12%;
+    width: 101%;
+    margin: -10px;
+    padding: 0;
+    color: lime;
+    font-size: 25px;
+    overflow: hidden;
+}
+
+.main_menu li {
+    float: left;
+    margin: 2% 5%;
+    color: #0c1100;
+}
+
+.main_menu a {
+    color: lime;
+    text-decoration: none;
+}
+
+.content {
+    padding: 5%;
+}
+
+.main_menu a:hover {
+    color: rgb(150, 255, 100);
+    text-decoration: none;
+}

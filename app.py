@@ -10,14 +10,14 @@ app.config.update(dict(DATABASE=os.path.join(app.root_path, "flask.db")))
 
 menu_list = [("Главная", '/'),
              ("Приветствие", '/Дмитрий'),
-             ("index", '/index'),
              ("Здарова", "/Здарова"),
              ("Регистрация", "/signup"),
              ("Вход", "/signin"),
              ("DataBase", "/index_db")]
 
-menu = db.FlaskDatabase(db.connect_db(app), "mainmenu")
-menu.add_list(menu_list)
+menu = [{"name": i, "url": j} for i, j in menu_list]
+# menu = db.FlaskDatabase(db.connect_db(app), "mainmenu")
+# menu.add_list(menu_list)
 
 users = [{"name": "Dmitriy", "password": "123456789"},
          {"name": "Admin", "password": "Admin"}]
@@ -33,31 +33,45 @@ def get_db():
 def close_db(error):
     if hasattr(g, "link_db"):
         g.link_db.close()
+
+
+@app.route("/index_db/")
+def index_db():
+    db = get_db()
+    db = db.FlaskDatabase(db)
+    return render_template("index_db.html", menu=menu)
+
+
 @app.route("/profile/<user>")
 def profile(user):
     if "user_logged" not in session or session["user_logged"] != user:
         abort(401)
     return user + f"<br><a href={url_for('exit')}>Выйти</a>"
 
+
 @app.route('/')
 def main():
     return render_template("index.html", id=2, menu=menu)
+
 
 # @app.route('/<name>/')
 # def hello(name):
 #     return f"<h1>Привет, {name}, ваш номер - {randint(1, 100)}</h1>"
 
+
 @app.route('/Здарова/')
 def index():
+
     return render_template("index1.html", menu=menu)
 
-@app.route("/index")
-def indexx():
-    i = 0
-    while True:
-        i += 1
-        yield f"""<font size={i}>{i}</font>"""
-        sleep(1)
+
+# @app.route("/index")
+# def indexx():
+#     i = 0
+#     while True:
+#         i += 1
+#         yield f"""<font size={i}>{i}</font>"""
+#         sleep(1)
 
 
 @app.route("/signin", methods=["POST", "GET"])
@@ -102,4 +116,4 @@ def exit():
 
 if __name__ == "__main__":
     app.run(debug=Config.DEBUG)
-#hiiiii
+# hiiiii

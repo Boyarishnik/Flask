@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link type="text/css" href="{{ url_for('static', filename='css/text.css') }}" rel="stylesheet"/>
-
+    <link type="text/css" href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"/>
 </head>
 <body>
   {% block title -%}
-  <ul class="title">
+  <ul class="main_menu">
       {% for i in menu %}
           <li><a href="{{i.url}}">{{i.name -}}</a></li>
       {% endfor %}
   </ul>
   {% endblock -%}
 
-  {% block content -%}
+  <div class="content">
+    {% block content -%}
 
-  {% endblock -%}
+    {% endblock -%}
+  </div>
 </body>
 </html>
