@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-  {% if id == 0 %}
-    <h1>id == 0</h1>
-  {% else %}
-    <div class="text">id != 0</div>
+  {% if "user_logged" in session %}
+    <h1>Здравствуйте, {{ session["user_logged"] }}</h1>
   {% endif %}
   <ol>
       <li>

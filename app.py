@@ -2,7 +2,7 @@ from flask import g, Flask, render_template, redirect, url_for, request, session
 from time import sleep
 from config import Config
 import os
-import database as db
+from database import FlaskDatabase, connect_db
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -13,7 +13,7 @@ menu_list = [("Главная", '/'),
              ("Здарова", "/Здарова"),
              ("Регистрация", "/signup"),
              ("Вход", "/signin"),
-             ("DataBase", "/index_db")]
+             ("DataBase", "/db/index_db")]
 
 menu = [{"name": i, "url": j} for i, j in menu_list]
 # menu = db.FlaskDatabase(db.connect_db(app), "mainmenu")
@@ -25,7 +25,7 @@ users = [{"name": "Dmitriy", "password": "123456789"},
 
 def get_db():
     if not hasattr(g, "link_db"):
-        g.link_db = db.connect_db(app)
+        g.link_db = connect_db(app)
     return g.link_db
 
 
@@ -35,11 +35,11 @@ def close_db(error):
         g.link_db.close()
 
 
-@app.route("/index_db/")
+@app.route("/db/index_db/")
 def index_db():
     db = get_db()
-    db = db.FlaskDatabase(db)
-    return render_template("index_db.html", menu=menu)
+    db = FlaskDatabase(db, "mainmenu")
+    return render_template("index_db.html", menu=db.get_menu())
 
 
 @app.route("/profile/<user>")
@@ -51,7 +51,7 @@ def profile(user):
 
 @app.route('/')
 def main():
-    return render_template("index.html", id=2, menu=menu)
+    return render_template("index.html", session=session, menu=menu)
 
 
 # @app.route('/<name>/')
@@ -76,26 +76,25 @@ def index():
 
 @app.route("/signin", methods=["POST", "GET"])
 def sign_in():
-    print(request.method)
-    if request.method == "POST":
-        print(request.form["username"], request.form["password"])
+    db = FlaskDatabase(get_db(), "users")
     if "user_logged" in session:
         return redirect(url_for("profile", user=session["user_logged"]))
     elif request.method == "POST":
-        for user in users:
-            if request.form["username"] == user["name"] and request.form["password"] == user["password"]:
+        for user in db.get_menu():
+            if request.form["username"] == user["username"] and str(request.form["password"]) == user["password"]:
                 session["user_logged"] = request.form["username"]
-        return redirect(url_for("profile", user=session["user_logged"]))
-    return render_template("signin.html")
+                return redirect(url_for("main"))
+    return render_template("signin.html", menu=menu)
 
 
 @app.route("/signup", methods=["POST", "GET"])
 def sign_up():
+    db = FlaskDatabase(get_db(), "users")
     print(list(map(lambda a: a["name"], users)))
     if request.method == "POST" and request.form["username"] not in map(lambda a: a["name"], users):
-        users.append({"name": request.form["username"], "password": request.form["password"]})
+        db.add_menu(request.form["username"], request.form["password"])
         return redirect(url_for("sign_in"))
-    return render_template("signup.html")
+    return render_template("signup.html", menu=menu)
 
 
 @app.errorhandler(404)
@@ -112,6 +111,11 @@ def error(error):
 def exit():
     del session["user_logged"]
     return redirect(url_for("sign_in"))
+
+@app.route("/asd/")
+def add():
+    db = FlaskDatabase(get_db(), "mainmenu")
+    return render_template("add.html", menu=db.get_menu())
 
 
 if __name__ == "__main__":

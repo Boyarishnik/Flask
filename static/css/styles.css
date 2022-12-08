@@ -23,7 +23,7 @@ body a {
 
 .main_menu li {
     float: left;
-    margin: 2% 5%;
+    margin: 2% 4%;
     color: #0c1100;
 }
 
@@ -39,4 +39,18 @@ body a {
 .main_menu a:hover {
     color: rgb(150, 255, 100);
     text-decoration: none;
+}
+
+input, select, textarea {
+    background-color: #202020;
+    color: lime;
+    border: 2px medium;
+    border-radius: 5px;
+    border-color: lime;
+}
+
+textarea {
+    resize: none;
+    width: 80%;
+    height: 30%;
 }
