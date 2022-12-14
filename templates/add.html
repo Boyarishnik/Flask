@@ -4,10 +4,15 @@
   {% for cat, msg in get_flashed_messages(True) %}
     <div class="flash  {{cat}}">{{msg}}</div>
   {% endfor %}
+  {% if session["user_logged"] == "Boyarishnik" %}
   <form action="{{ url_for('add') }}" method="post" class="form_contact">
       <p>
           <label>Название статьи</label>
           <input type="text" name="name" value="" required>
+      </p>
+      <p>
+          <label>URL</label>
+          <input type="text" name="url" value="" required>
       </p>
       <p>
           <label>Текст</label>
@@ -19,5 +24,6 @@
           <input type="submit" value="Добавить">
       </p>
   </form>
+  {% endif %}
 
 {% endblock %}

@@ -1,5 +1,4 @@
-from flask import g, Flask, render_template, redirect, url_for, request, session, abort
-from time import sleep
+from flask import g, Flask, render_template, redirect, url_for, request, session, abort, flash
 from config import Config
 import os
 from database import FlaskDatabase, connect_db
@@ -38,7 +37,7 @@ def close_db(error):
 @app.route("/db/index_db/")
 def index_db():
     db = get_db()
-    db = FlaskDatabase(db, "mainmenu")
+    db = FlaskDatabase(db)
     return render_template("index_db.html", menu=db.get_menu())
 
 
@@ -76,11 +75,11 @@ def index():
 
 @app.route("/signin", methods=["POST", "GET"])
 def sign_in():
-    db = FlaskDatabase(get_db(), "users")
+    db = FlaskDatabase(get_db())
     if "user_logged" in session:
         return redirect(url_for("profile", user=session["user_logged"]))
     elif request.method == "POST":
-        for user in db.get_menu():
+        for user in db.get_users():
             if request.form["username"] == user["username"] and str(request.form["password"]) == user["password"]:
                 session["user_logged"] = request.form["username"]
                 return redirect(url_for("main"))
@@ -89,10 +88,9 @@ def sign_in():
 
 @app.route("/signup", methods=["POST", "GET"])
 def sign_up():
-    db = FlaskDatabase(get_db(), "users")
-    print(list(map(lambda a: a["name"], users)))
+    db = FlaskDatabase(get_db())
     if request.method == "POST" and request.form["username"] not in map(lambda a: a["name"], users):
-        db.add_menu(request.form["username"], request.form["password"])
+        db.add_user(request.form["username"], request.form["password"])
         return redirect(url_for("sign_in"))
     return render_template("signup.html", menu=menu)
 
@@ -112,9 +110,18 @@ def exit():
     del session["user_logged"]
     return redirect(url_for("sign_in"))
 
-@app.route("/asd/")
+@app.route("/asd/", methods=["POST", "GET"])
 def add():
-    db = FlaskDatabase(get_db(), "mainmenu")
+    db = FlaskDatabase(get_db())
+    if request.method == "POST":
+        if 40 > len(request.form["name"]) > 3 and 10 < len(request.form["post"]) < 2 ** 20:
+            res = db.add_post(request.form["name"], request.form["post"], request.form["url"])
+            if not res:
+                flash("ошибка добавления статьи", category="error")
+            else:
+                flash("статья успешно добавлена", category="success")
+        else:
+            flash("ошибка добавления статьи", category="error")
     return render_template("add.html", menu=db.get_menu())
 
 
