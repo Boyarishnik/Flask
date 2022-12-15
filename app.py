@@ -115,8 +115,7 @@ def add():
     db = FlaskDatabase(get_db())
     if request.method == "POST":
         if 40 > len(request.form["name"]) > 3 and 10 < len(request.form["post"]) < 2 ** 20:
-            res = db.add_post(request.form["name"], request.form["post"], request.form["url"])
-            if not res:
+            if not db.add_post(request.form["name"], request.form["post"], request.form["url"]):
                 flash("ошибка добавления статьи", category="error")
             else:
                 flash("статья успешно добавлена", category="success")
