@@ -38,7 +38,7 @@ def close_db(error):
 def index_db():
     db = get_db()
     db = FlaskDatabase(db)
-    return render_template("index_db.html", menu=db.get_menu())
+    return render_template("index_db.html", menu=db.get_menu(), posts=db.get_posts())
 
 
 @app.route("/profile/<user>")
@@ -46,6 +46,12 @@ def profile(user):
     if "user_logged" not in session or session["user_logged"] != user:
         abort(401)
     return user + f"<br><a href={url_for('exit')}>Выйти</a>"
+
+
+@app.route("/post/<alias>")
+def show_post(alias):
+    db = FlaskDatabase(get_db())
+    return db.get_post(alias)["text"]
 
 
 @app.route('/')
@@ -109,6 +115,7 @@ def error(error):
 def exit():
     del session["user_logged"]
     return redirect(url_for("sign_in"))
+
 
 @app.route("/asd/", methods=["POST", "GET"])
 def add():

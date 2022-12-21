@@ -1,6 +1,16 @@
 {% extends 'base_adm.html' %}
 {% block content %}
-{% for i in range(20) %}
-<h1>Здарова</h1>
-{% endfor %}
+<h2>Список статей</h2>
+<hr class="sep">
+<ul class="list-posts">
+    {% for p in posts %}
+    <li>
+        <p class="title">
+            <a href="{{ url_for('show_post', alias=p.url) }}"> {{ p.title }}</a>
+        </p>
+        <p class="announce"> {{ p.text[:50] | striptags }} </p>
+        <hr class="sep">
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}

@@ -61,6 +61,19 @@ class FlaskDatabase:
     def get_users(self):
         return self.__get_table("users")
 
+    def get_posts(self):
+        return sorted(self.__get_table("posts"), key=lambda a: a["time"])
+
+    def get_post(self, url):
+        try:
+            self.__cur.execute(f"SELECT * from posts where url = ?", (url,))
+            res = self.__cur.fetchone()
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print(f"error {e}")
+            return False
+        return res
+
     def delete(self, id):
         try:
             self.__cur.execute(f"DELETE from posts where id = {id}")
