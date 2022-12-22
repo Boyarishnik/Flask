@@ -18,12 +18,14 @@
           <label>Текст</label>
       </p>
       <p>
-          <textarea name="post" rows="12", cols="50"></textarea>
+          <textarea name="post" rows="12" cols="50"></textarea>
       </p>
       <p>
           <input type="submit" value="Добавить">
       </p>
   </form>
+  {% else %}
+      <h1>НЕТ ПРАВ АДМИНИСТРАТОРА</h1>
   {% endif %}
 
 {% endblock %}
