@@ -38,7 +38,11 @@ def close_db(error):
 def index_db():
     db = get_db()
     db = FlaskDatabase(db)
+<<<<<<< HEAD
     return render_template("index_db.html", menu=db.get_menu(), posts=db.get_posts())
+=======
+    return render_template("index_db.html", menu=db.mainmenu)
+>>>>>>> 3e7443c (commit)
 
 
 @app.route("/profile/<user>")
@@ -85,7 +89,7 @@ def sign_in():
     if "user_logged" in session:
         return redirect(url_for("profile", user=session["user_logged"]))
     elif request.method == "POST":
-        for user in db.get_users():
+        for user in db.users:
             if request.form["username"] == user["username"] and str(request.form["password"]) == user["password"]:
                 session["user_logged"] = request.form["username"]
                 return redirect(url_for("main"))
@@ -128,9 +132,8 @@ def add():
                 flash("статья успешно добавлена", category="success")
         else:
             flash("ошибка добавления статьи", category="error")
-    return render_template("add.html", menu=db.get_menu())
+    return render_template("add.html", menu=db.mainmenu)
 
 
 if __name__ == "__main__":
     app.run(debug=Config.DEBUG)
-# hiiiii

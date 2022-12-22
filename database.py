@@ -3,6 +3,15 @@ from math import floor
 from time import time
 
 
+class TableDescr:
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    def __get__(self, instance, owner):
+        return instance.get_table(self.name)
+
+
 def connect_db(app):
     conn = sqlite3.connect(app.config["DATABASE"])
     conn.row_factory = sqlite3.Row
@@ -19,6 +28,9 @@ def create_db(app):
 
 
 class FlaskDatabase:
+    users = TableDescr()
+    mainmenu = TableDescr()
+    posts = TableDescr()
 
     def __add_in_table(self, table, *args):
         try:
@@ -45,7 +57,7 @@ class FlaskDatabase:
         # return True
         self.__add_in_table("mainmenu", title, url)
 
-    def __get_table(self, table):
+    def get_table(self, table):
         try:
             sql = f"""SELECT * FROM {table}"""
             self.__cur.execute(sql)
@@ -55,6 +67,7 @@ class FlaskDatabase:
             return False
         return res
 
+<<<<<<< HEAD
     def get_menu(self):
         return self.__get_table("mainmenu")
 
@@ -74,6 +87,8 @@ class FlaskDatabase:
             return False
         return res
 
+=======
+>>>>>>> 3e7443c (commit)
     def delete(self, id):
         try:
             self.__cur.execute(f"DELETE from posts where id = {id}")
