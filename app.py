@@ -38,7 +38,7 @@ def close_db(error):
 def index_db():
     db = get_db()
     db = FlaskDatabase(db)
-    return render_template("index_db.html", menu=db.get_menu(), posts=db.get_posts())
+    return render_template("index_db.html", menu=db.mainmenu, posts=db.posts)
 
 
 @app.route("/profile/<user>")
@@ -51,7 +51,8 @@ def profile(user):
 @app.route("/post/<alias>")
 def show_post(alias):
     db = FlaskDatabase(get_db())
-    return db.get_post(alias)["text"]
+    post = db.get_post(alias)
+    return render_template("post.html", menu=db.mainmenu, post=post)
 
 
 @app.route('/')
@@ -85,7 +86,7 @@ def sign_in():
     if "user_logged" in session:
         return redirect(url_for("profile", user=session["user_logged"]))
     elif request.method == "POST":
-        for user in db.get_users():
+        for user in db.users:
             if request.form["username"] == user["username"] and str(request.form["password"]) == user["password"]:
                 session["user_logged"] = request.form["username"]
                 return redirect(url_for("main"))
@@ -96,9 +97,15 @@ def sign_in():
 def sign_up():
     db = FlaskDatabase(get_db())
     if request.method == "POST" and request.form["username"] not in map(lambda a: a["name"], users):
-        db.add_user(request.form["username"], request.form["password"])
+        db.user = (request.form["username"], request.form["password"])
         return redirect(url_for("sign_in"))
     return render_template("signup.html", menu=menu)
+
+
+@app.route("/news/")
+def news():
+    db = FlaskDatabase(get_db())
+    return render_template("news.html", menu=db.mainmenu, news=db.news)
 
 
 @app.errorhandler(404)
@@ -128,9 +135,8 @@ def add():
                 flash("статья успешно добавлена", category="success")
         else:
             flash("ошибка добавления статьи", category="error")
-    return render_template("add.html", menu=db.get_menu())
+    return render_template("add.html", menu=db.mainmenu)
 
 
 if __name__ == "__main__":
     app.run(debug=Config.DEBUG)
-# hiiiii

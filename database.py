@@ -3,6 +3,18 @@ from math import floor
 from time import time
 
 
+class TableDescr:
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    def __get__(self, instance, owner):
+        return instance.get_table(self.name)
+
+    def __set__(self, instance, value):
+        instance.add_in_table(self.name, *value)
+
+
 def connect_db(app):
     conn = sqlite3.connect(app.config["DATABASE"])
     conn.row_factory = sqlite3.Row
@@ -19,8 +31,12 @@ def create_db(app):
 
 
 class FlaskDatabase:
+    users = TableDescr()
+    mainmenu = TableDescr()
+    posts = TableDescr()
+    news = TableDescr()
 
-    def __add_in_table(self, table, *args):
+    def add_in_table(self, table, *args):
         try:
             print(f"INSERT INTO {table} VALUES (NULL, {('?, ' * (len(args) - 1)) + '?'})", len(args))
             print(args)
@@ -35,17 +51,7 @@ class FlaskDatabase:
         self.__db = db
         self.__cur = db.cursor()
 
-    def add_menu(self, title, url):
-        # try:
-        #     self.__cur.execute(f"INSERT INTO {self.title} VALUES (NULL, ?, ?)", (title, url))
-        #     self.__db.commit()
-        # except sqlite3.Error as e:
-        #     print(f"error {e}")
-        #     return False
-        # return True
-        self.__add_in_table("mainmenu", title, url)
-
-    def __get_table(self, table):
+    def get_table(self, table):
         try:
             sql = f"""SELECT * FROM {table}"""
             self.__cur.execute(sql)
@@ -54,15 +60,6 @@ class FlaskDatabase:
             print(f"error {e}")
             return False
         return res
-
-    def get_menu(self):
-        return self.__get_table("mainmenu")
-
-    def get_users(self):
-        return self.__get_table("users")
-
-    def get_posts(self):
-        return sorted(self.__get_table("posts"), key=lambda a: a["time"])
 
     def get_post(self, url):
         try:
@@ -87,7 +84,7 @@ class FlaskDatabase:
         print(_list)
         for i in _list:
             print(i)
-            if not self.add_menu(*i):
+            if not self.add_in_table("mainmenu", *i):
                 return False
         return True
 
@@ -99,18 +96,18 @@ class FlaskDatabase:
                     print("Статья с таким url уже существует")
                     return False
             tm = floor(time())
-            self.__add_in_table("posts", title, post, url, "Boyarishnik", tm)
+            self.add_in_table("posts", title, post, url, "Boyarishnik", tm)
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка добавления статьи в БД:", e)
             return False
         return True
 
-    def add_user(self, name, password):
-        self.__add_in_table("users", name, password)
+    def del_table(self, table):
+        self.__cur.execute(f"DROP TABLE {table}")
 
 
 if __name__ == "__main__":
     from app import app
     db = FlaskDatabase(connect_db(app))
-    db.delete(2)
+    db.news = ("НОВОСТЬ", "Содержание", "news1", "date")

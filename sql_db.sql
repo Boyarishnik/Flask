@@ -15,4 +15,11 @@ text text not null,
 url text not null,
 username text not null,
 time integer not null
+);
+create table if not exists news (
+id integer primary key autoincrement,
+title text not null,
+text text not null,
+url text not null,
+date text not null
 )

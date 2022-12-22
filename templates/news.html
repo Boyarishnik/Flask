@@ -1,0 +1,11 @@
+{% extends 'base_adm.html' %}
+{% block content %}
+  <ul>
+      {{ for i in news[:5] }}
+      <li class="news">
+          <h1> {{ i['title'] }} </h1>
+          <p> {{ i['text'] }} </p>
+      </li>
+      {{ endfor }}
+  </ul>
+{% endblock %}

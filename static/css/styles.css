@@ -1,17 +1,19 @@
 body {
-    background-color: #0F100F;
     color: rgb(150, 255, 10);
     margin: 0%;
+    background-color: black;
 }
 
 body a {
     color: rgb(150, 255, 10);
+
 }
 
 .main_menu {
+    border-color: white;
     position: fixed;
     list-style: none;
-    background: black;
+    background: #191919;
     height: 12%;
     width: 101%;
     margin: -10px;
@@ -19,6 +21,7 @@ body a {
     color: lime;
     font-size: 25px;
     overflow: hidden;
+    box-shadow: 0 0 0 10px #151515;
 }
 
 .main_menu li {
@@ -32,13 +35,13 @@ body a {
     text-decoration: none;
 }
 
-.content {
-    padding: 5%;
-}
-
 .main_menu a:hover {
     color: rgb(150, 255, 100);
     text-decoration: none;
+}
+
+.content {
+    padding: 5.5% 1%;
 }
 
 input, select, textarea {
@@ -47,6 +50,12 @@ input, select, textarea {
     border: 2px medium;
     border-radius: 5px;
     border-color: lime;
+}
+
+input:focus, select:focus, textarea:focus {
+    color: #80FF20;
+    outline: lime;
+    box-shadow: 0 0 10px 4px #154505;
 }
 
 textarea {
@@ -60,4 +69,21 @@ textarea {
     background: lime;
     height: 1px;
     border: 0;
+}
+
+.flash {
+    left: 68%;
+    top: 88%;
+    position: fixed;
+    width: 30%;
+    height: 3%;
+    text-align: center;
+    background: #151515;
+    box-shadow: 0 0 0 1px #99FF00;
+    border-radius: 3px;
+    font-size: 100%;
+}
+
+.list-posts li {
+
 }
