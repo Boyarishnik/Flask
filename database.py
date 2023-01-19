@@ -73,7 +73,7 @@ class FlaskDatabase:
 
     def delete(self, id):
         try:
-            self.__cur.execute(f"DELETE from posts where id = {id}")
+            self.__cur.execute(f"DELETE from mainmenu where id = {id}")
             self.__db.commit()
         except sqlite3.Error as e:
             print(f"error {e}")
@@ -110,4 +110,4 @@ class FlaskDatabase:
 if __name__ == "__main__":
     from app import app
     db = FlaskDatabase(connect_db(app))
-    db.news = ("НОВОСТЬ", "Содержание", "news1", "date")
+    db.delete(76)
