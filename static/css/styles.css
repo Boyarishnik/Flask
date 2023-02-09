@@ -16,7 +16,7 @@ body a {
     background: #191919;
     height: 12%;
     width: 101%;
-    margin: -10px;
+    margin: -10px 0;
     padding: 0;
     color: lime;
     font-size: 25px;
@@ -84,6 +84,12 @@ textarea {
     font-size: 100%;
 }
 
-.list-posts li {
+.list-posts li .link {
+    float: right;
+    margin: 0%;
+    height: 2%;
+}
 
+.announce {
+    width: 75%;
 }

@@ -1,6 +1,9 @@
+import re
 import sqlite3
 from math import floor
 from time import time
+
+from flask import url_for
 
 
 class TableDescr:
@@ -66,6 +69,9 @@ class FlaskDatabase:
             self.__cur.execute(f"SELECT * from posts where url = ?", (url,))
             res = self.__cur.fetchone()
             self.__db.commit()
+            base = url_for("static", filename="images_html")
+            text = re.sub(r"(?P<tag><img\s+[^>)]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
+                          "\\g<tag>"+base+"/\\g<url>>", res["text"])
         except sqlite3.Error as e:
             print(f"error {e}")
             return False
