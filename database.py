@@ -69,13 +69,13 @@ class FlaskDatabase:
             self.__cur.execute(f"SELECT * from posts where url = ?", (url,))
             res = self.__cur.fetchone()
             self.__db.commit()
-            base = url_for("static", filename="images_html")
-            text = re.sub(r"(?P<tag><img\s+[^>)]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
-                          "\\g<tag>"+base+"/\\g<url>>", res["text"])
+            # text = re.sub(r"(?P<tag><img\s+[^>]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
+            #               "\\g<tag>"+base+"/\\g<url>>", res["text"])
+            text = res['text']
         except sqlite3.Error as e:
             print(f"error {e}")
             return False
-        return res
+        return res["title"], text
 
     def delete(self, id):
         try:
@@ -112,8 +112,18 @@ class FlaskDatabase:
     def del_table(self, table):
         self.__cur.execute(f"DROP TABLE {table}")
 
+    def del_post(self, id):
+        try:
+            self.__cur.execute(f"DELETE from posts where id = {id}")
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print(f"error {e}")
+            return False
+        return True
+
 
 if __name__ == "__main__":
     from app import app
     db = FlaskDatabase(connect_db(app))
-    db.delete(76)
+    a = db.get_post("test2")[1]
+    db.del_post(6)

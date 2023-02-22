@@ -35,10 +35,13 @@ def close_db(error):
         g.link_db.close()
 
 
-@app.route("/db/index_db/")
+@app.route("/db/index_db/", methods=["POST", "GET"])
 def index_db():
     db = get_db()
     db = FlaskDatabase(db)
+    if request.method == "POST":
+        db.del_post(request.form["id"])
+        print(request.form["id"])
     return render_template("index_db.html", menu=db.mainmenu, posts=db.posts)
 
 
@@ -52,7 +55,7 @@ def profile(user):
 @app.route("/post/<alias>")
 def show_post(alias):
     db = FlaskDatabase(get_db())
-    post = db.get_post(alias)
+    title, post = db.get_post(alias)
     return render_template("post.html", menu=db.mainmenu, post=post)
 
 

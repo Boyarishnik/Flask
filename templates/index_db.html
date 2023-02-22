@@ -2,6 +2,12 @@
 {% block content %}
 <h2>Список статей</h2>
 <hr class="sep">
+{% if session["user_logged"] == "Boyarishnik" %}
+<form action="/db/index_db/" method="post">
+    <input type="text" name="id" value="" required>
+    <input type="submit" value="Удалить">
+</form>
+{% endif %}
 <ul class="list-posts">
     {% for p in posts %}
     <li>
