@@ -1,4 +1,4 @@
-from flask import g, Flask, render_template, redirect, url_for, request, session, abort, flash
+from flask import g, Flask, render_template, redirect, url_for, request, session, abort, flash, make_response
 from config import Config
 import os
 from database import FlaskDatabase, connect_db
@@ -35,6 +35,15 @@ def close_db(error):
         g.link_db.close()
 
 
+@app.route("/test")
+def test():
+    content = render_template("index.html", session=session, menu=menu)
+    res = make_response(content)
+    res.headers["Content-Type"] = "multipad/from data"
+    res.headers["Server"] = "CUB Flask"
+    return res
+
+
 @app.route("/db/index_db/", methods=["POST", "GET"])
 def index_db():
     db = get_db()
@@ -47,9 +56,10 @@ def index_db():
 
 @app.route("/profile/<user>")
 def profile(user):
+    db = FlaskDatabase(get_db())
     if "user_logged" not in session or session["user_logged"] != user:
         abort(401)
-    return user + f"<br><a href={url_for('exit')}>Выйти</a>"
+    return render_template("profile.html", menu=db.mainmenu, user=user)
 
 
 @app.route("/post/<alias>")

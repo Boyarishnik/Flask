@@ -125,5 +125,10 @@ class FlaskDatabase:
 if __name__ == "__main__":
     from app import app
     db = FlaskDatabase(connect_db(app))
-    a = db.get_post("test2")[1]
-    db.del_post(6)
+    a = db.get_post("oymyakon")[1].replace("./", "/static/image")
+    db.del_post(10)
+    db.add_post(
+        "oymyakon",
+        a,
+        "oymyakon"
+    )
