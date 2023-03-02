@@ -74,7 +74,7 @@ def main():
     return render_template("index.html", session=session, menu=menu)
 
 
-@app.route("/update_server", method=["POST", "GET"])
+@app.route("/update_server", methods=["POST"])
 def webhook():
     if request.method == "POST":
         repo = git.Repo("/home/Boyarishnik2/Flask")
