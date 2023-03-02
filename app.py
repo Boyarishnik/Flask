@@ -2,7 +2,7 @@ from flask import g, Flask, render_template, redirect, url_for, request, session
 from config import Config
 import os
 from database import FlaskDatabase, connect_db
-# import git
+import git
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -73,15 +73,16 @@ def show_post(alias):
 def main():
     return render_template("index.html", session=session, menu=menu)
 
-# @app.route("/update_server", method=["POST", "GET"])
-# def webhook():
-#     if request.method == "POST":
-#         repo = git.Repo("/home/Boyarishnik2/Flask")
-#         origin = repo.remotes.origin
-#         origin.pull()
-#         return "update", 200
-#     else:
-#         return "Неправильный тип запроса", 400
+
+@app.route("/update_server", method=["POST", "GET"])
+def webhook():
+    if request.method == "POST":
+        repo = git.Repo("/home/Boyarishnik2/Flask")
+        origin = repo.remotes.origin
+        origin.pull()
+        return "update", 200
+    else:
+        return "Неправильный тип запроса", 400
 
 
 # @app.route('/<name>/')
