@@ -97,7 +97,7 @@ def index():
 
 
 @app.route("/asdasdasd")
-def asd(self):
+def asd():
     return "Just a test"
 
 
