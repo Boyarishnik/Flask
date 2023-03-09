@@ -170,3 +170,53 @@ def add():
 
 if __name__ == "__main__":
     app.run(debug=Config.DEBUG)
+
+
+# class Vertex:
+#     ID = 0
+#
+#     def __init__(self):
+#         self.links = list()
+#         self.id = self.__class__.ID
+#         self.__class__.ID += 1
+#
+#     def __repr__(self):
+#         return f"---{self.id}"
+#
+#
+# class Link:
+#
+#     def __init__(self, v1, v2):
+#         self.v1 = v1
+#         self.v2 = v2
+#         v1.links.append(self)
+#         v2.links.append(self)
+#         self.dist = 1
+#
+#     def __repr__(self):
+#         return f"{self.v1}{self.v2}---"
+#
+#
+# def find_way(v1, v2):
+#     return find(v1, v2, list(), 0, [v1])
+#
+#
+# def find(v1, v2, lst, length, path):
+#     if v1 == v2:
+#         return length, path + [v1]
+#
+#     res = list()
+#
+#     for link in v1.links:
+#
+#         if link.v1 == v1 and link.v2 not in lst:
+#             res.append(find(link.v2, v2, lst + [link.v1], length + link.dist, path))
+#
+#         if link.v2 == v1 and link.v1 not in lst:
+#             res.append(find(link.v1, v2, lst + [link.v2], length + link.dist, path))
+#
+#     res = list(filter(lambda a: a is not None, res))
+#     print(list(res))
+#
+#     if res:
+#         return min(res, key=lambda a: a[0])
