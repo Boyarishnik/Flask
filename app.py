@@ -96,7 +96,7 @@ def index():
     return render_template("index1.html", menu=menu)
 
 
-@app.route("/asdasdasd")
+@app.route("/asdasdasd/")
 def asd():
     return "Just a test"
 
